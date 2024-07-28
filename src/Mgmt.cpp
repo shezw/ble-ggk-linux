@@ -80,6 +80,66 @@ bool Mgmt::setName(std::string name, std::string shortName)
 	return true;
 }
 
+bool Mgmt::setRawAdvertisingData( const RawAdvertisingData &adv )
+{
+    setPowered(0);
+    usleep(200*1000);
+
+    size_t cp_len;
+    struct SRequest : HciAdapter::HciHeader
+    {
+        uint8_t Instance;
+        uint32_t Flags;
+        uint16_t Duration;
+        uint16_t Timeout;
+        uint8_t Adv_Data_Len;
+        uint8_t Scan_Rsp_Len;
+        uint8_t data[0];
+    } __attribute__((packed));
+
+    SRequest *request;
+    cp_len = sizeof(*request) + adv.advDataLen + adv.rspDataLen ;
+    uint8_t buf[cp_len];
+    request = (SRequest *)(buf);
+
+    request->code = Mgmt::EAddAdvertisingCommand;
+    request->controllerId = controllerIndex;
+    request->dataSize = cp_len - sizeof(HciAdapter::HciHeader);
+    request->Instance = 1;
+
+    request->Flags = 0b0000000000000000;
+
+    request->Timeout = 0;
+    request->Duration = 0 ;
+    request->Adv_Data_Len = adv.advDataLen;
+    request->Scan_Rsp_Len = adv.rspDataLen;
+
+    if (adv.advDataLen>0)
+        memcpy(request->data, adv.advData, adv.advDataLen);
+
+    /**
+        0	Switch into Connectable mode
+        1	Advertise as Discoverable
+        2	Advertise as Limited Discoverable
+        3	Add Flags field to Adv_Data
+        4	Add TX Power field to Adv_Data
+        5	Add Appearance field to Scan_Rsp
+        6	Add Local Name in Scan_Rsp
+        7	Secondary Channel with LE 1M
+        8	Secondary Channel with LE 2M
+        9	Secondary Channel with LE Coded
+    **/
+    if (adv.rspDataLen>0)
+        memcpy(request->data + adv.advDataLen, adv.rspData, adv.rspDataLen);
+
+    if (!HciAdapter::getInstance().sendCommand(*request))
+    {
+        Logger::warn(SSTR << "  + Failed to set discoverable");
+        return false;
+    }
+
+    return true;
+}
 // Sets discoverable mode
 // 0x00 disables discoverable
 // 0x01 enables general discoverable

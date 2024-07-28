@@ -124,6 +124,8 @@ struct Server
 	// server name to keep things simple.
 	std::string getOwnedName() const { return std::string("com.") + getServiceName(); }
 
+    const RawAdvertisingData &getRawAdvertisingData() const { return adv; }
+    bool  hasRawAdvertisingData() const { return useRawAdvertisingData; }
 	//
 	// Initialization
 	//
@@ -159,7 +161,7 @@ struct Server
 	//     Retrieve this value using the `getAdvertisingShortName()` method.
 	//
 	Server(const std::string &serviceName, const std::string &advertisingName, const std::string &advertisingShortName, 
-		GGKServerDataGetter getter, GGKServerDataSetter setter);
+		GGKServerDataGetter getter, GGKServerDataSetter setter, const RawAdvertisingData &advData);
 
 	//
 	// Utilitarian
@@ -237,6 +239,9 @@ private:
 	// This is used to build the path for our Bluetooth services (and we'll go ahead and use it as the owned name as well for
 	// consistency.)
 	std::string serviceName;
+
+    RawAdvertisingData adv;
+    bool useRawAdvertisingData = false;
 };
 
 // Our one and only server. It's a global.

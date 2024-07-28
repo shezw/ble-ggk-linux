@@ -204,6 +204,13 @@ struct GattCharacteristic : GattInterface
 	//
 	// The caller may choose to consult HciAdapter::getInstance().getActiveConnectionCount() in order to determine if there are any
 	// active connections before sending a change notification.
+
+    /*
+     * MARK
+     * For raw bytes
+     */
+    void sendChangeNotificationBytes(GDBusConnection *pBusConnection, guint8 * byteArr, int byteLen ) const;
+
 	template<typename T>
 	void sendChangeNotificationValue(GDBusConnection *pBusConnection, T value) const
 	{

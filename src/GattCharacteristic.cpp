@@ -211,4 +211,14 @@ void GattCharacteristic::sendChangeNotificationVariant(GDBusConnection *pBusConn
 	owner.emitSignal(pBusConnection, "org.freedesktop.DBus.Properties", "PropertiesChanged", pSasv);
 }
 
+/*
+ * MARK
+ * For raw bytes
+ */
+void GattCharacteristic::sendChangeNotificationBytes(GDBusConnection *pBusConnection, guint8 * bytes, int byteLen ) const
+{
+    GVariant *pVariant = Utils::gvariantFromByteArray(bytes, byteLen);
+    sendChangeNotificationVariant(pBusConnection, pVariant);
+}
+
 }; // namespace ggk

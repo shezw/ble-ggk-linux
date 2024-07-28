@@ -86,6 +86,7 @@ static bool bOwnedNameAcquired = false;
 static bool bAdapterConfigured = false;
 static bool bApplicationRegistered = false;
 static std::string bluezGattManagerInterfaceName = "";
+static bool configured = false;
 
 //
 // Externs
@@ -675,6 +676,8 @@ void configureAdapter()
 	std::string advertisingName = Mgmt::truncateName(TheServer->getAdvertisingName());
 	std::string advertisingShortName = Mgmt::truncateShortName(TheServer->getAdvertisingShortName());
 
+    bool hasCustomerAdvertisingData = TheServer->hasRawAdvertisingData();
+
 	// Find out what our current settings are
 	HciAdapter::ControllerInformation info = HciAdapter::getInstance().getControllerInformation();
 
@@ -690,7 +693,7 @@ void configureAdapter()
 	bool anFlag = (advertisingName.length() == 0 || advertisingName == info.name) && (advertisingShortName.length() == 0 || advertisingShortName == info.shortName);
 
 	// If everything is setup already, we're done
-	if (!pwFlag || !leFlag || !brFlag || !scFlag || !bnFlag || !cnFlag || !diFlag || !adFlag || !anFlag)
+	if (!pwFlag || !leFlag || !brFlag || !scFlag || !bnFlag || !cnFlag || !diFlag || !adFlag || !anFlag || !configured)
 	{
 		// We need it off to start with
 		if (pwFlag)
@@ -751,7 +754,7 @@ void configureAdapter()
 		}
 
 		// Set the name?
-		if (!anFlag)
+		if (!anFlag && !hasCustomerAdvertisingData)
 		{
 			Logger::info(SSTR << "Setting advertising name to '" << advertisingName << "' (with short name: '" << advertisingShortName << "')");
 			if (!mgmt.setName(advertisingName.c_str(), advertisingShortName.c_str())) { setRetry(); return; }
@@ -759,7 +762,16 @@ void configureAdapter()
 
 		// Turn it back on
 		Logger::debug("Powering on");
+
+        if (hasCustomerAdvertisingData)
+        {
+            if (!mgmt.setRawAdvertisingData(TheServer->getRawAdvertisingData())) { setRetry(); return;}
+        }
+
 		if (!mgmt.setPowered(true)) { setRetry(); return; }
+
+        // Configure at least once
+        configured = true;
 	}
 
 	Logger::info("The Bluetooth adapter is fully configured");

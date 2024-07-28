@@ -3,16 +3,16 @@
 /* define if the compiler supports basic C++11 syntax */
 #undef HAVE_CXX11
 
-/* Define to 1 if you have the `gio-2.0' library (-lgio-2.0). */
+/* Define to 1 if you have the 'gio-2.0' library (-lgio-2.0). */
 #undef HAVE_LIBGIO_2_0
 
-/* Define to 1 if you have the `glib-2.0' library (-lglib-2.0). */
+/* Define to 1 if you have the 'glib-2.0' library (-lglib-2.0). */
 #undef HAVE_LIBGLIB_2_0
 
-/* Define to 1 if you have the `gobject-2.0' library (-lgobject-2.0). */
+/* Define to 1 if you have the 'gobject-2.0' library (-lgobject-2.0). */
 #undef HAVE_LIBGOBJECT_2_0
 
-/* Define to 1 if you have the `pthread' library (-lpthread). */
+/* Define to 1 if you have the 'pthread' library (-lpthread). */
 #undef HAVE_LIBPTHREAD
 
 /* Name of package */

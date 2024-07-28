@@ -426,4 +426,12 @@ std::string Utils::stringFromGVariantByteArray(const GVariant *pVariant)
 	return array.data();
 }
 
+void Utils::BytesFromGVariantByteArray(const GVariant *pVariant, char * data, int * len){
+
+    gsize size;
+    gconstpointer pPtr = g_variant_get_fixed_array(const_cast<GVariant *>(pVariant), &size, 1);
+    memcpy( data, pPtr, size);
+    *len = size;
+}
+
 }; // namespace ggk

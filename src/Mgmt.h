@@ -180,6 +180,8 @@ struct Mgmt
 	// Returns true on success, otherwise false
 	bool setName(std::string name, std::string shortName);
 
+    bool setRawAdvertisingData( const RawAdvertisingData &data );
+
 	// Sets discoverable mode
 	// 0x00 disables discoverable
 	// 0x01 enables general discoverable

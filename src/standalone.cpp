@@ -239,6 +239,28 @@ int dataSetter(const char *pName, const void *pData)
 // Entry point
 //
 
+#define USE_CUSTOM_ADV_DATA 1
+
+#if USE_CUSTOM_ADV_DATA
+
+/**
+ *
+    [hci0]# add-adv -d 02010606094142434400 -s 0302eeff0303ff88140943696f742d5a5250726f2d3132333435363738 1
+ *
+ */
+
+static uint8_t advertisingData[] = {
+        0x02,0x01,0x06
+};
+
+static uint8_t advertisingRspData[] = {
+        0x03,0x02,0xee,0xff,
+        0x03,0x03,0xff,0x88,
+        0x14,0x09,
+        'C','i','o','t','-','Z','R','p','r','o','-','1','2','3','4','5','6','7','8'
+};
+#endif
+
 int main(int argc, char **ppArgv)
 {
 	// A basic command-line parser
@@ -280,6 +302,17 @@ int main(int argc, char **ppArgv)
 	ggkLogRegisterAlways(LogAlways);
 	ggkLogRegisterTrace(LogTrace);
 
+#if USE_CUSTOM_ADV_DATA
+    static RawAdvertisingData customAdvData = {
+        .advDataLen = sizeof(advertisingData),
+        .rspDataLen = sizeof(advertisingRspData),
+        .advData = advertisingData,
+        .rspData = advertisingRspData
+    };
+#else
+    static RawAdvertisingData customAdvData = {0,0, nullptr, nullptr};
+#endif
+
 	// Start the server's ascync processing
 	//
 	// This starts the server on a thread and begins the initialization process
@@ -289,7 +322,7 @@ int main(int argc, char **ppArgv)
 	//     This first parameter (the service name) must match tha name configured in the D-Bus permissions. See the Readme.md file
 	//     for more information.
 	//
-	if (!ggkStart("gobbledegook", "Gobbledegook", "Gobbledegook", dataGetter, dataSetter, kMaxAsyncInitTimeoutMS))
+	if (!ggkStart("bleggklinux", "bleggklinux", "ble-ggk-ciot", dataGetter, dataSetter, kMaxAsyncInitTimeoutMS,customAdvData))
 	{
 		return -1;
 	}
@@ -300,9 +333,9 @@ int main(int argc, char **ppArgv)
 	while (ggkGetServerRunState() < EStopping)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(15));
-
-		serverDataBatteryLevel = std::max(serverDataBatteryLevel - 1, 0);
-		ggkNofifyUpdatedCharacteristic("/com/gobbledegook/battery/level");
+//
+//		serverDataBatteryLevel = std::max(serverDataBatteryLevel - 1, 0);
+//		ggkNofifyUpdatedCharacteristic("/com/bleggklinux/battery/level");
 	}
 
 	// Wait for the server to come to a complete stop (CTRL-C from the command line)

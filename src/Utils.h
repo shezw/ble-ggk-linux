@@ -170,6 +170,7 @@ struct Utils
 	// Extracts a string from an array of bytes ("ay")
 	static std::string stringFromGVariantByteArray(const GVariant *pVariant);
 
+    static void BytesFromGVariantByteArray(const GVariant *pVariant, char * data, int * len);
 	// -----------------------------------------------------------------------------------------------------------------------------
 	// Endian conversion
 	//

@@ -60,6 +60,14 @@ extern "C"
 {
 #endif //__cplusplus
 
+    typedef struct RawAdvertisingData_s
+    {
+        uint8_t advDataLen;
+        uint8_t rspDataLen;
+        uint8_t *advData;
+        uint8_t *rspData;
+    } RawAdvertisingData;
+
 	// -----------------------------------------------------------------------------------------------------------------------------
 	// LOGGING
 	// -----------------------------------------------------------------------------------------------------------------------------
@@ -211,7 +219,7 @@ extern "C"
 	//     Retrieve this value using the `getAdvertisingShortName()` method
 	//
 	int ggkStart(const char *pServiceName, const char *pAdvertisingName, const char *pAdvertisingShortName, 
-		GGKServerDataGetter getter, GGKServerDataSetter setter, int maxAsyncInitTimeoutMS);
+		GGKServerDataGetter getter, GGKServerDataSetter setter, int maxAsyncInitTimeoutMS, const RawAdvertisingData &advData);
 
 	// Blocks for up to maxAsyncInitTimeoutMS milliseconds until the server shuts down.
 	//
