@@ -8,6 +8,47 @@ If you are a GGK user and would like to become an advocate for its future develo
 
 # News
 
+### New in ble-ggk-linux
+
+Add RawAdvertisingData for linux ble
+
+See `standalong.cpp` to use and methods in `Mgmt.cpp`
+
+```cpp
+
+#if USE_RAW_ADV_DATA
+
+static uint8_t advertisingData[] = {
+        0x02,0x01,0x06
+};
+
+static uint8_t advertisingRspData[] = {
+        0x03,0x02,0xee,0xff,
+        0x03,0x03,0xff,0x88,
+        0x14,0x09,
+        'C','i','o','t','-','Z','R','p','r','o','-','1','2','3','4','5','6','7','8'
+};
+#endif
+
+#if USE_RAW_ADV_DATA
+static RawAdvertisingData customAdvData = {
+    .advDataLen = sizeof(advertisingData),
+    .rspDataLen = sizeof(advertisingRspData),
+    .advData = advertisingData,
+    .rspData = advertisingRspData
+};
+#else
+static RawAdvertisingData customAdvData = {0,0, nullptr, nullptr};
+#endif
+
+if (!ggkStart("bleggklinux", "bleggklinux", "ble-ggk-ciot", dataGetter, dataSetter, kMaxAsyncInitTimeoutMS,customAdvData))
+{
+return -1;
+}
+
+```
+
+
 ### Jun 24, 2019 - New license
 
 This author has deciced that this software should be free. Furthermore, this author's choice should not limit the freedoms of other authors by restricting their choices. As a result, Gobbledegook is now licensed under the **New BSD License**.
