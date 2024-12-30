@@ -197,7 +197,7 @@ void ggkServerRegisterBrand( const char * brand )
     if (ggk_ble_brand)
         free(ggk_ble_brand);
 
-    ggk_ble_brand = malloc(strlen(brand)+1);
+    ggk_ble_brand = (char*) malloc(strlen(brand)+1);
     memset(ggk_ble_brand, 0,strlen(brand)+1 );
     memcpy(ggk_ble_brand,brand, strlen(brand));
 }
@@ -207,7 +207,7 @@ void ggkServerRegisterDeviceModel( const char * model )
     if (ggk_ble_model)
         free(ggk_ble_model);
 
-    ggk_ble_model = malloc(strlen(model)+1);
+    ggk_ble_model = (char*) malloc(strlen(model)+1);
     memset(ggk_ble_model, 0,strlen(model)+1 );
     memcpy(ggk_ble_model,model, strlen(model));
 }
@@ -217,7 +217,7 @@ void ggkServerRegisterSenderChar( const char * ch )
     if (ggk_sender_char)
         free(ggk_sender_char);
 
-    ggk_sender_char = malloc(strlen(ch)+1);
+    ggk_sender_char = (char*) malloc(strlen(ch)+1);
     memset(ggk_sender_char, 0,strlen(ch)+1 );
     memcpy(ggk_sender_char,ch, strlen(ch));
 }
@@ -227,7 +227,7 @@ void ggkServerRegisterReceiverCB( const char * ch, GGKMessageReceived receivedCB
     if (ggk_receiver_char)
         free(ggk_receiver_char);
 
-    ggk_sender_char = malloc(strlen(ch)+1);
+    ggk_sender_char = (char*) malloc(strlen(ch)+1);
     memset(ggk_receiver_char, 0,strlen(ch)+1 );
     memcpy(ggk_receiver_char,ch, strlen(ch));
 
@@ -394,14 +394,14 @@ Server::Server(const std::string &serviceName, const std::string &advertisingNam
             {
                 // TODO 这里要处理 数据为00的情况 ok
                 if (ggk_sender_cache_len)
-                self.sendChangeNotificationBytes( pConnection, ggk_sender_cache, ggk_sender_cache_len );
+                self.sendChangeNotificationBytes( pConnection, (unsigned char*)ggk_sender_cache, ggk_sender_cache_len );
 
                 return true;
             })
 
             .gattCharacteristicEnd()
 
-            .gattServiceEnd()
+            .gattServiceEnd();
 
 	objects.push_back(DBusObject(DBusObjectPath(), false));
 
