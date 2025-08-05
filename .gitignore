@@ -1,1 +1,5 @@
 build
+cc_build
+cc_target
+cc_thirdparty
+.cc_config

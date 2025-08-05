@@ -1,0 +1,9 @@
+libdir=@CMAKE_INSTALL_LIBDIR@
+includedir=@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: libble-ggk-linux
+Version: @PROJECT_VERSION@
+Description: ggk ble lib for linux bluez
+URL: http://github.com/shezw/ble-ggk-linux
+Libs: -L${libdir} -lble-ggk-linux -lglib-2.0 -lgobject-2.0 -lgio-2.0 -lgmodule-2.0 pcre ffi z
+Cflags: -I${includedir} -I${includedir}/ble-ggk-linux
